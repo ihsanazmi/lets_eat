@@ -8,6 +8,7 @@ class Home extends Component {
 
     state = {
         collections: null,
+        keywords: ''
     }
 
     componentDidMount(){
@@ -25,6 +26,13 @@ class Home extends Component {
         })
         .catch(err=>{
             console.log(err)
+        })
+    }
+
+    search = ()=>{
+        let keyword = this.searchKeyword.value
+        this.setState({
+            keywords: keyword
         })
     }
 
@@ -66,8 +74,10 @@ class Home extends Component {
                     </div>
                     <p className="lead">Find the best restaurants, cafés, and bars in Bandung</p>
                     <div className="d-flex flex-row">
-                        <input className="form-control" type="text" placeholder="Search for restaurants..."/>
-                        <button className="btn btn-outline-light ml-3">Search</button>
+                        <input className="form-control" type="text" placeholder="Search for restaurants..." ref={(input)=>{this.searchKeyword = input}} onChange={this.search}/>
+                        <Link to={`/restaurant?q=${this.state.keywords}`}>
+                            <button className="btn btn-outline-light ml-3">Search</button>
+                        </Link>
                     </div>
                 </div>
                 
