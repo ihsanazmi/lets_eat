@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/src/config/userkey.js
 /.pnp
 .pnp.js
 
