@@ -5,6 +5,7 @@ import {Paginator} from 'primereact/paginator'
 import queryString from 'query-string'
 import {Spinner} from 'reactstrap'
 import {Helmet} from 'react-helmet'
+import Footer from './Footer'
 
 import Header from './Header'
 import { initGA, logPageView } from '../config/analytics'
@@ -179,12 +180,13 @@ class Restaurant extends Component {
                                 
                             </div>
                         </div>
-                        <div className="col-12 col-md-9">
+                        <div className="col-12 col-md-9 mb-5">
                             {this.renderData()}
-                            <Paginator first={this.state.first} rows={this.state.rows} totalRecords={this.state.totalRecords}onPageChange={(e)=>{this.onPageChange(e)}}></Paginator>
+                            <Paginator style={{backgroundColor:'white'}} first={this.state.first} rows={this.state.rows} totalRecords={this.state.totalRecords}onPageChange={(e)=>{this.onPageChange(e)}}></Paginator>
                         </div>
                     </div>
                 </div> 
+                <Footer/>
             </div>
         )
     }

@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom'
 import key from '../config/userkey'
 import {Helmet} from 'react-helmet'
 import {initGA, logPageView} from '../config/analytics'
+import Footer from './Footer'
 
 class Home extends Component {
 
@@ -68,7 +69,7 @@ class Home extends Component {
 
     render() {
         if(this.state.collections === null){
-            return <Spinner size="lg" animation="border" className="d-flex justify-content-center mx-auto d-block" style={{marginTop : '50vh'}} />
+            return <Spinner size="lg" animation="border" className="d-flex justify-content-center mx-auto d-block" style={{marginTop : '30vh'}} />
         }
         return (
             <div >
@@ -100,7 +101,7 @@ class Home extends Component {
                         {this.renderCollection()}
                     </div>
                 </div>
-
+                <Footer/>
             </div>
         )
     }

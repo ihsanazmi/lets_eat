@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import Home from '../components/Home'
 import Collection from '../components/Collections'
 import Restaurant from '../components/Restaurant'
+// import Footer from './Footer'
 import NotFound from '../components/NotFound'
 class App extends Component {
 
@@ -17,6 +18,7 @@ class App extends Component {
                         <Route path = "/restaurant" component={Restaurant}/>
                         <Route path="*" component = {NotFound}/>
                     </Switch>
+                    {/* <Footer/> */}
                 </BrowserRouter>
             </div>
         )

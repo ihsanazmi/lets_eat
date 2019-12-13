@@ -5,6 +5,7 @@ import {Spinner} from 'reactstrap'
 import Header from './Header'
 import { initGA, logPageView } from '../config/analytics'
 import {Helmet} from 'react-helmet'
+import Footer from './Footer'
 
 let entity_id = 11052
 
@@ -121,10 +122,9 @@ class Collections extends Component {
                         <div className="row row-cols-1 row-cols-md-3">
                             {this.renderPlace()}
                         </div>
-
-                    </div>
-                                    
+                    </div>            
                 </div>
+                <Footer/>
             </div>
         )
     }
