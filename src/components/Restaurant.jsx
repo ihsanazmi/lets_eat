@@ -122,7 +122,7 @@ class Restaurant extends Component {
         }
         let renderRestaurant = this.state.restaurants.map(val=>{
             return(
-                <div key={val.restaurant.id} className="border rounded p-3 mb-5 animated fadeIn" style={{backgroundColor:'white'}}>
+                <div onClick={logEvent('Detail', 'View Restaurant', val.restaurant.name)} key={val.restaurant.id} className="border rounded p-3 mb-5 animated fadeIn" style={{backgroundColor:'white'}}>
                     <div className="d-flex flex-lg-row flex-column align-items-center">
                         <img style={{width:150, height:150}} src={val.restaurant.thumb} alt="..."/>
                         <Link className="text-decoration-none" to={`/detail/${val.restaurant.id}`}>
