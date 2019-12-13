@@ -45,7 +45,7 @@ class Home extends Component {
     renderCollection = ()=>{
         let data = this.state.collections.map(val=>{
             return(
-                <Link key ={val.collection.collection_id} to={`/collection/${val.collection.collection_id}`}>
+                <Link className="text-decoration-none" key ={val.collection.collection_id} to={`/collection/${val.collection.collection_id}`}>
                     <div  className="col mb-4 animated fadeIn" style={{cursor:'pointer'}}>
                         <div className="card h-100">
                             <div className="row no-gutters h-100">
@@ -80,17 +80,19 @@ class Home extends Component {
                         content="Find Out Restauran in Bandung"
                     />
                 </Helmet>
-                <div className="d-flex flex-column justify-content-center align-items-center" style={{height:'60vh', backgroundColor:'#E23744', color: 'white'}}>
-                    <div className="d-flex flex-column">
-                        <h1 className="display-4 mb-0">Let's Eat</h1>
-                        <p className="blockquote-footer text-white mt-0">Powered by Zomato API</p>
-                    </div>
-                    <p className="lead">Find the best restaurants, cafés, and bars in Bandung</p>
-                    <div className="d-flex flex-row">
-                        <input className="form-control" type="text" placeholder="Search for restaurants..." ref={(input)=>{this.searchKeyword = input}} onChange={this.search}/>
-                        <Link to={this.state.keywords.length > 2 ? `/restaurant?q=${this.state.keywords}` : `/restaurant`}>
-                            <button onClick={()=>{logEvent('home', 'search', this.state.keywords )}} className="btn btn-outline-light ml-3">Search</button>
-                        </Link>
+                <div className="d-flex flex-column justify-content-center align-items-center" style={{height:'50vh', backgroundColor:'#E23744', color: 'white'}}>
+                    <div className="p-4">
+                        <div className="d-flex flex-column">
+                            <h1 className="display-4 mb-0">Let's Eat</h1>
+                            <p className="blockquote-footer text-white mt-0">Powered by Zomato API</p>
+                        </div>
+                        <p className="lead">Find the best restaurants, cafés, and bars in Bandung</p>
+                        <div className="d-flex flex-row">
+                            <input className="form-control" type="text" placeholder="Search for restaurants..." ref={(input)=>{this.searchKeyword = input}} onChange={this.search}/>
+                            <Link to={this.state.keywords.length > 2 ? `/restaurant?q=${this.state.keywords}` : `/restaurant`}>
+                                <button onClick={()=>{logEvent('home', 'search', this.state.keywords )}} className="btn btn-outline-light ml-3">Search</button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
                 

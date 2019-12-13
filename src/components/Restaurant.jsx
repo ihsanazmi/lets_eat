@@ -8,6 +8,7 @@ import {Helmet} from 'react-helmet'
 import Footer from './Footer'
 import Swal from 'sweetalert2'
 import Header from './Header'
+import {Link} from 'react-router-dom'
 import { initGA, logPageView, logEvent } from '../config/analytics'
 
 class Restaurant extends Component {
@@ -124,12 +125,14 @@ class Restaurant extends Component {
                 <div key={val.restaurant.id} className="border rounded p-3 mb-5 animated fadeIn" style={{backgroundColor:'white'}}>
                     <div className="d-flex flex-lg-row flex-column align-items-center">
                         <img style={{width:150, height:150}} src={val.restaurant.thumb} alt="..."/>
+                        <Link className="text-decoration-none" to={`/detail/${val.restaurant.id}`}>
                         <div className="d-flex flex-column ml-3 justify-content-center" style={{maxWidth:'300px'}}>
                             <p className="text-muted mb-0">{val.restaurant.establishment[0]}</p>
                             <h4 className="text-danger mb-0">{val.restaurant.name}</h4>
-                            <p className="font-weight-bold mb-0">{val.restaurant.location.locality}</p>
+                            <p className="text-dark font-weight-bold mb-0">{val.restaurant.location.locality}</p>
                             <p className="text-muted text-truncate">{val.restaurant.location.address}</p>
                         </div>
+                        </Link>
                         <div className="d-flex flex-column ml-auto justify-content-start align-items-center">
                             <p className="px-2 py-1 rounded text-white mb-0" style={{backgroundColor:`#${val.restaurant.user_rating.rating_color}`}}>{val.restaurant.user_rating.aggregate_rating}</p>
                             <p className="text-muted">{val.restaurant.user_rating.votes} votes</p>

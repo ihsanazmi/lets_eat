@@ -6,6 +6,7 @@ import Header from './Header'
 import { initGA, logPageView } from '../config/analytics'
 import {Helmet} from 'react-helmet'
 import Footer from './Footer'
+import {Link} from 'react-router-dom'
 
 let entity_id = 11052
 
@@ -62,7 +63,6 @@ class Collections extends Component {
                 title: filter[0].collection.title,
                 description: filter[0].collection.description,
             })
-            // document.title = filter[0].collection.title
         })
         .catch(err=>{
             console.log(err)
@@ -76,10 +76,12 @@ class Collections extends Component {
                     <div className="card h-100">
                     <img src={val.restaurant.thumb} className="h-50" alt="..."/>
                     <div className="card-body">
+                    <Link className="text-decoration-none text-dark" to={`/detail/${val.restaurant.id}`}>
                         <div className="d-flex flex-row">
                             <h5 className="card-title mb-0 py-2">{val.restaurant.name}</h5>
                             <h5 className="ml-auto border rounded p-2 align-self-center" style={{backgroundColor:`#${val.restaurant.user_rating.rating_color}`}}>{val.restaurant.user_rating.aggregate_rating}</h5>
                         </div>
+                    </Link>
                         <p className="card-text text-muted mb-0">{val.restaurant.location.locality_verbose}</p>
                         <p className="card-text mb-0 text-muted">{val.restaurant.cuisines}</p>
                     </div>
@@ -97,7 +99,6 @@ class Collections extends Component {
         return (
             <div>
                 <Helmet>
-                    {/* {console.log(document.title)} */}
                     <title>{document.title} | Lets Eat</title>
                     <meta
                         name="description"
