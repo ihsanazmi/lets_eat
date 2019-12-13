@@ -3,6 +3,8 @@ import axios from '../config/axios'
 import {Spinner} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import key from '../config/userkey'
+import {Helmet} from 'react-helmet'
+import {initGA, logPageView} from '../config/analytics'
 
 class Home extends Component {
 
@@ -12,7 +14,10 @@ class Home extends Component {
     }
 
     componentDidMount(){
+        document.title = 'Lets Eat'
         this.getCollections()
+        initGA()
+        logPageView()
     }
 
     getCollections = ()=>{
@@ -67,6 +72,13 @@ class Home extends Component {
         }
         return (
             <div >
+                <Helmet>
+                    <title>{document.title}</title>
+                    <meta
+                        name="description"
+                        content="Find Out Restauran in Bandung"
+                    />
+                </Helmet>
                 <div className="d-flex flex-column justify-content-center align-items-center" style={{height:'60vh', backgroundColor:'#E23744', color: 'white'}}>
                     <div className="d-flex flex-column">
                         <h1 className="display-4 mb-0">Let's Eat</h1>
@@ -75,7 +87,7 @@ class Home extends Component {
                     <p className="lead">Find the best restaurants, cafés, and bars in Bandung</p>
                     <div className="d-flex flex-row">
                         <input className="form-control" type="text" placeholder="Search for restaurants..." ref={(input)=>{this.searchKeyword = input}} onChange={this.search}/>
-                        <Link to={`/restaurant?q=${this.state.keywords}`}>
+                        <Link to={this.state.keywords.length > 2 ? `/restaurant?q=${this.state.keywords}` : `/restaurant`}>
                             <button className="btn btn-outline-light ml-3">Search</button>
                         </Link>
                     </div>
@@ -84,11 +96,9 @@ class Home extends Component {
                 <div className="container">
                     <h4 className="mt-3 mb-0">Collections</h4>
                     <p className="text-muted">Explore curated lists of top restaurants, cafes, pubs, and bars in Bandung, based on trends</p>
-
                     <div className="row row-cols-1 row-cols-lg-3">
                         {this.renderCollection()}
                     </div>
-                    
                 </div>
 
             </div>

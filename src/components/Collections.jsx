@@ -3,7 +3,8 @@ import axios from '../config/axios'
 import key from '../config/userkey'
 import {Spinner} from 'reactstrap'
 import Header from './Header'
-
+import { initGA, logPageView } from '../config/analytics'
+import {Helmet} from 'react-helmet'
 
 let entity_id = 11052
 
@@ -19,8 +20,11 @@ class Collections extends Component {
     }
 
     componentDidMount(){
+        document.title = 'Collection'
         this.getCollection()
         this.getAllCollection()
+        initGA()
+        logPageView()
     }
 
     getCollection = ()=>{
@@ -35,7 +39,7 @@ class Collections extends Component {
                 collections: res.data.restaurants,
                 total_collection: res.data.restaurants.length
             })
-            console.log(res.data.restaurants)
+            // console.log(res.data.restaurants)
         })
         .catch(err=>{
             console.log(err)
@@ -57,6 +61,7 @@ class Collections extends Component {
                 title: filter[0].collection.title,
                 description: filter[0].collection.description,
             })
+            // document.title = filter[0].collection.title
         })
         .catch(err=>{
             console.log(err)
@@ -90,6 +95,15 @@ class Collections extends Component {
         }
         return (
             <div>
+                <Helmet>
+                    {/* {console.log(document.title)} */}
+                    <title>{document.title} | Lets Eat</title>
+                    <meta
+                        name="description"
+                        content={this.state.description}
+                    />
+                    <html/>
+                </Helmet>
                 <Header/>
                 <div className="container mt-3">
                     
