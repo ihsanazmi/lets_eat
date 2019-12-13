@@ -72,7 +72,7 @@ class Collections extends Component {
     renderPlace = ()=>{
         let data = this.state.collections.map(val=>{
             return(
-                <div key={val.restaurant.id} className="col mb-4">
+                <div key={val.restaurant.id} className="col mb-4 animated fadeIn">
                     <div className="card h-100">
                     <img src={val.restaurant.thumb} className="h-50" alt="..."/>
                     <div className="card-body">
@@ -108,7 +108,7 @@ class Collections extends Component {
                 <Header/>
                 <div className="container mt-3">
                     
-                    <div className="border rounded" style={{backgroundColor:'white'}}>
+                    <div className="border rounded animated fadeIn" style={{backgroundColor:'white'}}>
                         <div className="hero-img" style={{backgroundImage: `url(${this.state.image_url})`}}/>
                         <div className="p-3">
                             <h4 className="mb-0">{this.state.title}</h4>

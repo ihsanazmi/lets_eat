@@ -4,7 +4,7 @@ import {Spinner} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import key from '../config/userkey'
 import {Helmet} from 'react-helmet'
-import {initGA, logPageView} from '../config/analytics'
+import {initGA, logPageView, logEvent} from '../config/analytics'
 import Footer from './Footer'
 
 class Home extends Component {
@@ -46,7 +46,7 @@ class Home extends Component {
         let data = this.state.collections.map(val=>{
             return(
                 <Link key ={val.collection.collection_id} to={`/collection/${val.collection.collection_id}`}>
-                    <div  className="col mb-4" style={{cursor:'pointer'}}>
+                    <div  className="col mb-4 animated fadeIn" style={{cursor:'pointer'}}>
                         <div className="card h-100">
                             <div className="row no-gutters h-100">
                                 <div className="col-4">
@@ -89,7 +89,7 @@ class Home extends Component {
                     <div className="d-flex flex-row">
                         <input className="form-control" type="text" placeholder="Search for restaurants..." ref={(input)=>{this.searchKeyword = input}} onChange={this.search}/>
                         <Link to={this.state.keywords.length > 2 ? `/restaurant?q=${this.state.keywords}` : `/restaurant`}>
-                            <button className="btn btn-outline-light ml-3">Search</button>
+                            <button onClick={()=>{logEvent('home', 'search', this.state.keywords )}} className="btn btn-outline-light ml-3">Search</button>
                         </Link>
                     </div>
                 </div>

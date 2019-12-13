@@ -8,3 +8,12 @@ export const logPageView = ()=>{
     ReactGa.set({page: window.location.pathname})
     ReactGa.pageview(window.location.pathname + window.location.search)
 }
+
+export const logEvent = (category, action, keyword)=>{
+    ReactGa.event({
+        category: category,
+        action: action,
+        label: keyword
+    })
+    console.log(keyword)
+}

@@ -6,9 +6,9 @@ import queryString from 'query-string'
 import {Spinner} from 'reactstrap'
 import {Helmet} from 'react-helmet'
 import Footer from './Footer'
-
+import Swal from 'sweetalert2'
 import Header from './Header'
-import { initGA, logPageView } from '../config/analytics'
+import { initGA, logPageView, logEvent } from '../config/analytics'
 
 class Restaurant extends Component {
 
@@ -20,7 +20,7 @@ class Restaurant extends Component {
         restaurants: null,
         keyword: '',
         sortBy: 1,
-        // restaurants: null,
+        intervalId: 0,
     }
 
     componentDidMount(){
@@ -72,8 +72,7 @@ class Restaurant extends Component {
         });
         let first = event.first
         let lastIndex=  event.first + event.rows
-        console.log(first)
-        console.log(lastIndex)
+        window.scroll(0,0)
         this.getRestaurants(first, lastIndex, this.state.keyword, this.state.sortBy)
     }
 
@@ -99,6 +98,18 @@ class Restaurant extends Component {
         window.location.search = ''
     }
 
+    seePhone = (phone)=>{
+        Swal.fire({
+            title: `<i class="fas fa-phone"> ${phone}</i>`,
+            showClass: {
+              popup: 'animated fadeIn'
+            },
+            hideClass: {
+              popup: 'animated fadeOut'
+            }
+          })
+    }
+
     renderData = ()=>{
         if(this.state.restaurants.length === 0){
             return(
@@ -110,7 +121,7 @@ class Restaurant extends Component {
         }
         let renderRestaurant = this.state.restaurants.map(val=>{
             return(
-                <div key={val.restaurant.id} className="border rounded p-3 mb-5" style={{backgroundColor:'white'}}>
+                <div key={val.restaurant.id} className="border rounded p-3 mb-5 animated fadeIn" style={{backgroundColor:'white'}}>
                     <div className="d-flex flex-lg-row flex-column align-items-center">
                         <img style={{width:150, height:150}} src={val.restaurant.thumb} alt="..."/>
                         <div className="d-flex flex-column ml-3 justify-content-center" style={{maxWidth:'300px'}}>
@@ -139,7 +150,10 @@ class Restaurant extends Component {
                             <p className ="my-0" style={{flex:8}}>{val.restaurant.timings}</p>
                         </div>
                     </div>
-                    <button className="btn btn-block btn-success mt-3">Call</button>
+                    <button onClick={()=>{
+                        this.seePhone(val.restaurant.phone_numbers)
+                        logEvent('Phone Number', 'See Phone Number', val.restaurant.name)}} 
+                        className="btn btn-block btn-success mt-3">Call</button>
                 </div>
             )
         })
@@ -173,10 +187,21 @@ class Restaurant extends Component {
                                     <p onClick={this.removeQuery} style={{display:!this.state.keyword?'none':'', cursor:'pointer'}}>remove</p>
                                 </div>
                                 <h6 className="font-weight-bold">Sort By</h6>
-                                <p onClick={()=>{this.sortRestaurant(1)}} className="mb-0" style={{color:this.state.sortBy === 1 ? '#099E44': 'black', cursor:'pointer'}}>Popularity - <span className="text-muted">high to low</span></p>
-                                <p onClick={()=>{this.sortRestaurant(2)}} className="mb-0" style={{color:this.state.sortBy === 2 ? '#099E44': 'black', cursor: 'pointer'}}>Rating <span className="text-muted">high to low</span></p>
-                                <p onClick={()=>{this.sortRestaurant(3)}} className="mb-0" style={{color:this.state.sortBy === 3 ? '#099E44': 'black', cursor: 'pointer'}}>Cost <span className="text-muted">high to low</span></p>
-                                <p onClick={()=>{this.sortRestaurant(4)}} className="mb-0" style={{color:this.state.sortBy === 4 ? '#099E44': 'black', cursor: 'pointer'}}>Cost <span className="text-muted">low to high</span></p>
+                                <p onClick={()=>{this.sortRestaurant(1) 
+                                            logEvent('Sort', 'Popularity', 'high to low')}} 
+                                    className="mb-0" 
+                                    style={{color:this.state.sortBy === 1 ? '#099E44': 'black', cursor:'pointer'}}>Popularity - 
+                                    <span className="text-muted">high to low</span>
+                                </p>
+                                <p onClick={()=>{this.sortRestaurant(2)
+                                            logEvent('Sort', 'Rating', 'high to low')}} 
+                                    className="mb-0" style={{color:this.state.sortBy === 2 ? '#099E44': 'black', cursor: 'pointer'}}>Rating <span className="text-muted">high to low</span></p>
+                                <p onClick={()=>{this.sortRestaurant(3)
+                                            logEvent('Sort', 'Cost', 'high to low')}} 
+                                    className="mb-0" style={{color:this.state.sortBy === 3 ? '#099E44': 'black', cursor: 'pointer'}}>Cost <span className="text-muted">high to low</span></p>
+                                <p onClick={()=>{this.sortRestaurant(4)
+                                            logEvent('Sort', 'Cost', 'low to high')}} 
+                                    className="mb-0" style={{color:this.state.sortBy === 4 ? '#099E44': 'black', cursor: 'pointer'}}>Cost <span className="text-muted">low to high</span></p>
                                 
                             </div>
                         </div>
