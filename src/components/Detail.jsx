@@ -138,7 +138,7 @@ class Detail extends Component {
                     
                     <div className="d-flex flex-md-row flex-column justify-content-between px-5 pt-3 container rounded-bottom" style={{backgroundColor:'white'}}>
                         <div className="d-flex flex-column align-items-center">
-                            <h1>{name}</h1>
+                            <h1 className="text-center text-md-right">{name}</h1>
                             <p>{location.locality}<span> . </span>{establishment[0]}</p>
                         </div>
                         <div className="d-flex flex-column align-items-center">

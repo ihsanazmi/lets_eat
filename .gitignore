@@ -4,6 +4,7 @@
 /node_modules
 /src/config/userkey.js
 /.pnp
+/.firebase
 .pnp.js
 
 # testing

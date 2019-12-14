@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from '../config/axios'
 import {Spinner} from 'reactstrap'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import key from '../config/userkey'
 import {Helmet} from 'react-helmet'
 import {initGA, logPageView, logEvent} from '../config/analytics'
@@ -11,7 +11,10 @@ class Home extends Component {
 
     state = {
         collections: null,
-        keywords: ''
+        keywords: '',
+        latitude: '',
+        longitude: '',
+        redirect: false,
     }
 
     componentDidMount(){
@@ -67,9 +70,34 @@ class Home extends Component {
         return data
     }
 
+    getPosition = ()=>{
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(this.showPosition)
+          } else { 
+            console.log("Geolocation is not supported by this browser.")
+          }
+    }
+
+    showPosition = (position)=> {
+        let latitude =  position.coords.latitude
+        let longitude = position.coords.longitude
+        this.setState({latitude, longitude, redirect:!this.state.redirect})
+    }
+
     render() {
         if(this.state.collections === null){
             return <Spinner size="lg" animation="border" className="d-flex justify-content-center mx-auto d-block" style={{marginTop : '30vh'}} />
+        }
+        if(this.state.redirect === true){
+            return(
+                <Redirect to={{
+                    pathname:'/restaurant',
+                    state: {
+                        longitude: this.state.longitude,
+                        latitude: this.state.latitude
+                    }
+                }} />
+            )
         }
         return (
             <div >
@@ -93,6 +121,7 @@ class Home extends Component {
                                 <button onClick={()=>{logEvent('home', 'search', this.state.keywords )}} className="btn btn-outline-light ml-3">Search</button>
                             </Link>
                         </div>
+                        <button className="btn btn-outline-light mt-4 btn-block" onClick={this.getPosition} >Search Restaurant Nearby</button>
                     </div>
                 </div>
                 

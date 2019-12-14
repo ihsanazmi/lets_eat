@@ -15,5 +15,4 @@ export const logEvent = (category, action, keyword)=>{
         action: action,
         label: keyword
     })
-    console.log(keyword)
 }

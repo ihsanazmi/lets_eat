@@ -17,24 +17,43 @@ class Restaurant extends Component {
         first: 0,
         rows: 20,
         lastIndex: 20,
-        totalRecords: 100,
+        totalRecords: 0,
         restaurants: null,
         keyword: '',
         sortBy: 1,
         intervalId: 0,
+        location: 'Bandung',
+        latitude: '',
+        longitude: '',
+        entity_id: '11052',
+        entity_type: 'city'
     }
 
     componentDidMount(){
         document.title = 'Restaurant'
-        initGA()
-        logPageView()
-        const values = queryString.parse(this.props.location.search)
-        let keyword = values.q
-        this.setState({keyword})
-        this.getRestaurants(this.state.first, this.state.lastIndex, keyword, this.state.sortBy)
+        if(this.props.location.state !== undefined){
+            let {latitude, longitude} = this.props.location.state
+            const values = queryString.parse(this.props.location.search)
+            let keyword = values.q
+            axios.get(`/geocode?lat=${latitude}&lon=${longitude}`, {headers:{'user-key': key}})
+            .then(res=>{
+                initGA()
+                logPageView()
+                let {entity_id, entity_type, latitude, longitude, title} = res.data.location
+                this.setState({location: title, latitude, longitude, entity_id, entity_type})
+                this.getRestaurants(this.state.first, this.state.lastIndex, keyword, this.state.sortBy, entity_id, entity_type, latitude, longitude)
+            })
+        }else{
+            initGA()
+            logPageView()
+            const values = queryString.parse(this.props.location.search)
+            let keyword = values.q
+            this.setState({keyword})
+            this.getRestaurants(this.state.first, this.state.lastIndex, keyword, this.state.sortBy, this.state.entity_id, this.state.entity_type)
+        }
     }
 
-    getRestaurants = (first, last, query, sort)=>{
+    getRestaurants = (first, last, query, sort, entity_id ,entity_type, latitude, longitude)=>{
         let keyword = query
         if(keyword === undefined || keyword === ''){
             keyword = ''
@@ -55,12 +74,19 @@ class Restaurant extends Component {
             order = 'asc'
         }
 
-        axios.get(`https://developers.zomato.com/api/v2.1/search?entity_id=11052&entity_type=city&q=${keyword}&start=${first}&count=${last}&sort=${sortby}&order=${order}`, 
+        axios.get(`https://developers.zomato.com/api/v2.1/search?entity_id=${entity_id}&entity_type=${entity_type}&q=${keyword}&start=${first}&count=${last}&lat=${latitude}&lon=${longitude}&sort=${sortby}&order=${order}`, 
         {
             headers: {'user-key': key}
         })
         .then(res=>{
-            this.setState({restaurants:res.data.restaurants})
+            let total
+            if(res.data.results_found > 100){
+                total = 100
+            }else{
+                total = res.data.results_found
+            }
+            this.setState({restaurants:res.data.restaurants, totalRecords:total})
+            // console.log(res.data)
         })
         .catch(err=>{console.log(err)})
     }
@@ -74,7 +100,8 @@ class Restaurant extends Component {
         let first = event.first
         let lastIndex=  event.first + event.rows
         window.scroll(0,0)
-        this.getRestaurants(first, lastIndex, this.state.keyword, this.state.sortBy)
+
+        this.getRestaurants(first, lastIndex, this.state.keyword, this.state.sortBy, this.state.entity_id, this.state.entity_type, this.state.latitude, this.state.longitude)
     }
 
     removeQuery = ()=>{
@@ -82,9 +109,14 @@ class Restaurant extends Component {
         let first = 0
         let lastIndex = 20
         let sortBy = 1
+        let entity_id = 11052
+        let entity_type = 'city'
+        let latitude = ''
+        let longitude = ''
+        let location = 'Bandung'
         window.location.search = ''
-        this.setState({keyword: '', first:0, lastIndex:20, rows:20, sortBy:1})
-        this.getRestaurants(first, lastIndex, keyword, sortBy )
+        this.setState({keyword: '', first:0, lastIndex:20, rows:20, sortBy:1, entity_id, entity_type, latitude, longitude, location})
+        this.getRestaurants(first, lastIndex, keyword, sortBy, entity_id, entity_type, latitude, longitude )
     }
 
     sortRestaurant = (val)=>{
@@ -92,7 +124,7 @@ class Restaurant extends Component {
         let lastIndex = 20
         let sort = val
         this.setState({sortBy: val, first, lastIndex, rows:20})
-        this.getRestaurants(first, lastIndex,this.state.keyword, sort)
+        this.getRestaurants(first, lastIndex,this.state.keyword, sort, this.state.entity_id, this.state.entity_type, this.state.latitude, this.state.longitude)
     }
 
     seeAll = ()=>{
@@ -122,35 +154,33 @@ class Restaurant extends Component {
         }
         let renderRestaurant = this.state.restaurants.map(val=>{
             return(
-                <div onClick={logEvent('Detail', 'View Restaurant', val.restaurant.name)} key={val.restaurant.id} className="border rounded p-3 mb-5 animated fadeIn" style={{backgroundColor:'white'}}>
-                    <div className="d-flex flex-lg-row flex-column align-items-center">
-                        <img style={{width:150, height:150}} src={val.restaurant.thumb} alt="..."/>
+                <div onClick={logEvent('Detail', 'View Restaurant', val.restaurant.name)} key={val.restaurant.id} className="border rounded p-3 mb-1 animated fadeIn" style={{backgroundColor:'white'}}>
+                    <div className="d-flex flex-lg-row flex-column align-items-center mb-0">
+                        <img className="rounded" style={{width:150, height:150}} src={val.restaurant.thumb} alt="..."/>
                         <Link className="text-decoration-none" to={`/detail/${val.restaurant.id}`}>
-                        <div className="d-flex flex-column ml-3 justify-content-center" style={{maxWidth:'300px'}}>
+                        <div className="d-flex flex-column ml-3 text-center text-lg-left justify-content-center" style={{maxWidth:'300px'}}>
                             <p className="text-muted mb-0">{val.restaurant.establishment[0]}</p>
                             <h4 className="text-danger mb-0">{val.restaurant.name}</h4>
                             <p className="text-dark font-weight-bold mb-0">{val.restaurant.location.locality}</p>
                             <p className="text-muted text-truncate">{val.restaurant.location.address}</p>
                         </div>
                         </Link>
-                        <div className="d-flex flex-column ml-auto justify-content-start align-items-center">
+                        <div className="d-flex flex-column ml-lg-auto justify-content-start align-items-center mb-0">
                             <p className="px-2 py-1 rounded text-white mb-0" style={{backgroundColor:`#${val.restaurant.user_rating.rating_color}`}}>{val.restaurant.user_rating.aggregate_rating}</p>
-                            <p className="text-muted">{val.restaurant.user_rating.votes} votes</p>
+                            <p className="text-muted mb-0">{val.restaurant.user_rating.votes} votes</p>
                         </div>
                     </div>
                     <hr/>
-                    <div className="d-flex flex-column">
-                        <div className="d-flex flex-row justify-content-start">
-                            <p className ="my-0" style={{flex:3}}>CUISINES:</p>
-                            <p className ="my-0" style={{flex:8}}>{val.restaurant.cuisines}</p>
+                    <div className="d-flex flex-row">
+                        <div className="d-flex flex-column">
+                            <p className ="my-0" >CUISINES:</p>
+                            <p className ="my-0" >COST FOR TWO:</p>
+                            <p className ="my-0" >HOURS:</p>
                         </div>
-                        <div className="d-flex flex-row justify-content-start">
-                            <p className ="my-0" style={{flex:3}}>COST FOR TWO:</p>
-                            <p className ="my-0" style={{flex:8}}>Rp.{Intl.NumberFormat().format(val.restaurant.average_cost_for_two).replace(/,/g, '.')}</p>
-                        </div>
-                        <div className="d-flex flex-row justify-content-start">
-                            <p className ="my-0" style={{flex:3}}>HOURS:</p>
-                            <p className ="my-0" style={{flex:8}}>{val.restaurant.timings}</p>
+                        <div className="d-flex flex-column ml-lg-5 ml-auto">
+                            <p className ="my-0" >{val.restaurant.cuisines}</p>
+                            <p className ="my-0" >Rp.{Intl.NumberFormat().format(val.restaurant.average_cost_for_two).replace(/,/g, '.')}</p>
+                            <p className ="my-0" >{val.restaurant.timings}</p>
                         </div>
                     </div>
                     <button onClick={()=>{
@@ -178,12 +208,16 @@ class Restaurant extends Component {
                 </Helmet>
                 <Header/>
                 <div className="container mt-3">
-                    <h3 className="mb-3">Bandung Restaurants</h3>
+                    <h3 className="mb-3">{this.state.location} Restaurants</h3>
                     {this.state.keyword ? <p>Matching in "{this.state.keyword}"</p> : ''}
                     <div className="row">
                         <div className="col-12 col-md-3 mb-3">
                             <div className="border rounded p-2" style={{backgroundColor:'white'}}>
                                 <h5 className="font-weight-bold">Filter</h5>
+                                <div className="d-flex flex-row" >
+                                    <p style={{display: this.state.latitude ? '': 'none'}}>Nearby "<span style={{color:'#099E44'}}>{this.state.location}</span>"</p>
+                                    <p onClick={this.removeQuery} style={{display: this.state.latitude ? '': 'none', cursor:'pointer'}}>remove</p>
+                                </div>
                                 <h6 className="font-weight-bold" style={{display:!this.state.keyword?'none':''}}>Keyword</h6>
                                 <div className="d-flex flex-row">
                                     <p style={{color:'#099E44', display:!this.state.keyword?'none':''}}>"{this.state.keyword}"</p> 

@@ -72,18 +72,20 @@ class Collections extends Component {
     renderPlace = ()=>{
         let data = this.state.collections.map(val=>{
             return(
-                <div key={val.restaurant.id} className="col mb-4 animated fadeIn">
+                <div key={val.restaurant.id} className="col mb-2 animated fadeIn">
                     <div className="card h-100">
-                    <img src={val.restaurant.thumb} className="h-50" alt="..."/>
-                    <div className="card-body">
-                    <Link className="text-decoration-none text-dark" to={`/detail/${val.restaurant.id}`}>
-                        <div className="d-flex flex-row">
-                            <h5 className="card-title mb-0 py-2">{val.restaurant.name}</h5>
-                            <h5 className="ml-auto border rounded p-2 align-self-center" style={{backgroundColor:`#${val.restaurant.user_rating.rating_color}`}}>{val.restaurant.user_rating.aggregate_rating}</h5>
+                    <img src={val.restaurant.featured_image} style={{height:200}} alt="..."/>
+                    <div className="card-body pt-1">
+                        <Link className="text-decoration-none text-dark" to={`/detail/${val.restaurant.id}`}>
+                            <div className="d-flex flex-row mt-0">
+                                <h5 className="card-title mt-0 mb-0 py-2">{val.restaurant.name}</h5>
+                                <h6 className="ml-auto border rounded px-2 py-1 align-self-center" style={{backgroundColor:`#${val.restaurant.user_rating.rating_color}`}}>{val.restaurant.user_rating.aggregate_rating}</h6>
+                            </div>
+                        </Link>
+                        <div className="d-flex flex-row flex-md-column justify-content-between">
+                            <p className="card-text text-muted mb-0" style={{flex:1}}>{val.restaurant.location.locality_verbose}</p>
+                            <p className="card-text mb-0 text-muted text-right text-md-left" style={{flex:1}}>{val.restaurant.cuisines}</p>
                         </div>
-                    </Link>
-                        <p className="card-text text-muted mb-0">{val.restaurant.location.locality_verbose}</p>
-                        <p className="card-text mb-0 text-muted">{val.restaurant.cuisines}</p>
                     </div>
                     </div>
                 </div>
